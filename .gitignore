@@ -44,7 +44,7 @@ target/
 # IntelliJ #
 ######################
 .idea/
-*.iml
+linkedin-import.iml
 
 # Project #
 ######################
