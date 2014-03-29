@@ -1,11 +1,14 @@
 package com.cvsintellect.linkedinimport.model.contact;
 
-import java.io.Serializable;
-
 import org.simpleframework.xml.Element;
+
+import java.io.Serializable;
 
 public class IMAccount implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	@Element(name = "id", required = false)
+	private String id;
 
 	@Element(name = "im-account-type", required = false)
 	private String type;
@@ -17,10 +20,19 @@ public class IMAccount implements Serializable {
 		super();
 	}
 
-	public IMAccount(String type, String name) {
+	public IMAccount(String id, String type, String name) {
 		super();
+		this.id = id;
 		this.type = type;
 		this.name = name;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getType() {
