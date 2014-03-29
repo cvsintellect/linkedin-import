@@ -11,7 +11,7 @@ import com.cvsintellect.linkedinimport.model.urls.URLResource;
 public class MemberURLResourceInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Attribute
+	@Attribute(required = false)
 	private int total;
 
 	@ElementList(entry = "member-url", inline = true, required = false)

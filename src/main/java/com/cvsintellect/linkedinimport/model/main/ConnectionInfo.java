@@ -1,20 +1,20 @@
 package com.cvsintellect.linkedinimport.model.main;
 
-import java.util.List;
-
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 
+import java.util.List;
+
 public class ConnectionInfo {
-	@Attribute
+	@Attribute(required = false)
 	private int total;
 
-	@Attribute
+	@Attribute(required = false)
 	private int count;
 
-	@Attribute
+	@Attribute(required = false)
 	private int start;
-	
+
 	@ElementList(entry = "person", inline = true, required = false)
 	private List<PersonProfile> connectionProfiles;
 

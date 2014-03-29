@@ -9,7 +9,7 @@ import org.simpleframework.xml.ElementList;
 public class VolunteerExperienceInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Attribute
+	@Attribute(required = false)
 	private int total;
 
 	@ElementList(entry = "volunteer-experience", inline = true, required = false)

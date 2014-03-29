@@ -9,7 +9,7 @@ import org.simpleframework.xml.ElementList;
 public class ContactNumberInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Attribute
+	@Attribute(required = false)
 	private int total;
 
 	@ElementList(entry = "phone-number", inline = true, required = false)
