@@ -1,12 +1,11 @@
 package com.cvsintellect.linkedinimport.parser;
 
-import java.io.File;
-
+import com.cvsintellect.linkedinimport.model.main.ConnectionInfo;
+import com.cvsintellect.linkedinimport.model.main.JobSearchInfo;
+import com.cvsintellect.linkedinimport.model.main.PersonProfile;
 import org.junit.Test;
 
-import com.cvsintellect.linkedinimport.model.main.ConnectionInfo;
-import com.cvsintellect.linkedinimport.model.main.PersonProfile;
-import com.cvsintellect.linkedinimport.parser.HRXMLParser;
+import java.io.File;
 
 public class HRXMLParserIntegrationTest {
 	@Test
@@ -19,5 +18,9 @@ public class HRXMLParserIntegrationTest {
 		File connectionsSource = new File(this.getClass().getResource("/test-data/linkedin-response-contact.xml").getFile());
 		ConnectionInfo connectionInfo = HRXMLParser.parseConnectionsInformation(connectionsSource);
 		System.out.println(connectionInfo);
+
+		File jobsSource = new File(this.getClass().getResource("/test-data/linkedin-response-job.xml").getFile());
+		JobSearchInfo jobSearchInfo = HRXMLParser.parseJobSearchInformation(jobsSource);
+		System.out.println(jobSearchInfo);
 	}
 }

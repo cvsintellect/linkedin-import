@@ -1,13 +1,13 @@
 package com.cvsintellect.linkedinimport.parser;
 
-import java.io.File;
-import java.io.InputStream;
-
+import com.cvsintellect.linkedinimport.model.main.ConnectionInfo;
+import com.cvsintellect.linkedinimport.model.main.JobSearchInfo;
+import com.cvsintellect.linkedinimport.model.main.PersonProfile;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
-import com.cvsintellect.linkedinimport.model.main.ConnectionInfo;
-import com.cvsintellect.linkedinimport.model.main.PersonProfile;
+import java.io.File;
+import java.io.InputStream;
 
 public class HRXMLParser {
 	public static PersonProfile parsePersonInformation(File inputFile) throws Exception {
@@ -56,5 +56,29 @@ public class HRXMLParser {
 		ConnectionInfo connectionInfo = serializer.read(ConnectionInfo.class, input);
 
 		return connectionInfo;
+	}
+
+	public static JobSearchInfo parseJobSearchInformation(File inputFile) throws Exception {
+		Serializer serializer = new Persister();
+
+		JobSearchInfo jobSearchInfo = serializer.read(JobSearchInfo.class, inputFile);
+
+		return jobSearchInfo;
+	}
+
+	public static JobSearchInfo parseJobSearchInformation(InputStream inputStream) throws Exception {
+		Serializer serializer = new Persister();
+
+		JobSearchInfo jobSearchInfo = serializer.read(JobSearchInfo.class, inputStream);
+
+		return jobSearchInfo;
+	}
+
+	public static JobSearchInfo parseJobSearchInformation(String input) throws Exception {
+		Serializer serializer = new Persister();
+
+		JobSearchInfo jobSearchInfo = serializer.read(JobSearchInfo.class, input);
+
+		return jobSearchInfo;
 	}
 }
