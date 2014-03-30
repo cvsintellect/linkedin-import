@@ -40,7 +40,7 @@ public class LinkedInPluginImpl implements Plugin {
 	private static final String CONNECTION_URL = "http://api.linkedin.com/v1/people/~/connections:(id," + CONNECTION_API_PARAMETERS + ")";
 
 	public static final String JOB_API_PARAMETERS = "(jobs:(id,customer-job-code,active,posting-date,expiration-date,"
-			+ "company:(id,name),position:(title,location,job-functions,industries,job-type,experience-level),skills-and-experience,description-snippet,description,salary,"
+			+ "company:(id,name),position:(title,location,job-functions,industries,job-type,experience-level),skills-and-experience,description,salary,"
 			+ "job-poster:(id,first-name,last-name,headline),referral-bonus,site-job-url,location-description))";
 
 	private static final String JOB_URL = "http://api.linkedin.com/v1/job-search:" + JOB_API_PARAMETERS + "?";
