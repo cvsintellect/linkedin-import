@@ -10,6 +10,9 @@ public class JobsInfo {
 	private int total;
 
 	@Attribute(required = false)
+	private int count;
+
+	@Attribute(required = false)
 	private int start;
 
 	@ElementList(entry = "job", inline = true, required = false)
@@ -19,9 +22,10 @@ public class JobsInfo {
 		super();
 	}
 
-	public JobsInfo(int total, int start, List<Job> jobs) {
+	public JobsInfo(int total, int count, int start, List<Job> jobs) {
 		super();
 		this.total = total;
+		this.count = count;
 		this.start = start;
 		this.jobs = jobs;
 	}
@@ -32,6 +36,14 @@ public class JobsInfo {
 
 	public void setTotal(int total) {
 		this.total = total;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
 	}
 
 	public int getStart() {
