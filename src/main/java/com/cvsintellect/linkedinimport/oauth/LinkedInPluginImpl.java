@@ -5,7 +5,6 @@ import com.cvsintellect.linkedinimport.model.main.JobSearchInfo;
 import com.cvsintellect.linkedinimport.model.main.PersonProfile;
 import com.cvsintellect.linkedinimport.parser.HRXMLParser;
 import org.apache.commons.io.IOUtils;
-import org.brickred.socialauth.plugin.Plugin;
 import org.brickred.socialauth.util.ProviderSupport;
 import org.brickred.socialauth.util.Response;
 
@@ -13,7 +12,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LinkedInPluginImpl implements Plugin {
+public class LinkedInPluginImpl implements CVsIntellectLinkedInPlugin {
 	private ProviderSupport providerSupport;
 
 	private static final String PROFILE_API_PARAMETERS = "first-name,last-name,maiden-name,headline,location:(name,country:(code)),industry,num-connections,summary,specialties,"
@@ -59,25 +58,27 @@ public class LinkedInPluginImpl implements Plugin {
 		this.providerSupport = providerSupport;
 	}
 
-	public List<PersonProfile> getContactList() throws Exception {
-		Response serviceResponse = null;
+	@Override
+	public PersonProfile getProfile() throws Exception {
+		String personProfileResponse = getResponseFor(PROFILE_URL);
+
+		PersonProfile personProfile = null;
 		try {
-			serviceResponse = providerSupport.api(CONNECTION_URL);
+			personProfile = HRXMLParser.parsePersonInformation(personProfileResponse);
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to retrieve the connections from " + CONNECTION_URL, e);
+			throw new RuntimeException("Failed to parse the profile from response." + PROFILE_URL, e);
 		}
 
-		if (serviceResponse.getStatus() != 200) {
-			throw new RuntimeException("Failed to retrieve the connections from " + CONNECTION_URL + ". Status :" + serviceResponse.getStatus());
-		}
+		return personProfile;
+	}
+
+	@Override
+	public List<PersonProfile> getContactList() throws Exception {
+		String contactsResponse = getResponseFor(CONNECTION_URL);
 
 		List<PersonProfile> contactList = null;
 		try {
-			StringWriter writer = new StringWriter();
-			IOUtils.copy(serviceResponse.getInputStream(), writer, "UTF-8");
-			String personProfileResponse = writer.toString();
-
-			ConnectionInfo connectionInfo = HRXMLParser.parseConnectionsInformation(personProfileResponse);
+			ConnectionInfo connectionInfo = HRXMLParser.parseConnectionsInformation(contactsResponse);
 			if (connectionInfo.getConnections() != null && !connectionInfo.getConnections().isEmpty()) {
 				contactList = new ArrayList<PersonProfile>();
 				for (PersonProfile contact : connectionInfo.getConnections()) {
@@ -91,57 +92,39 @@ public class LinkedInPluginImpl implements Plugin {
 		return contactList;
 	}
 
-	public PersonProfile getProfile() throws Exception {
-		Response serviceResponse = null;
-		try {
-			serviceResponse = providerSupport.api(PROFILE_URL);
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to retrieve the user profile from " + PROFILE_URL, e);
-		}
-
-		if (serviceResponse.getStatus() != 200) {
-			throw new RuntimeException("Failed to retrieve the user profile from " + PROFILE_URL + ". Status :" + serviceResponse.getStatus());
-		}
-
-		PersonProfile personProfile = null;
-		try {
-			StringWriter writer = new StringWriter();
-			IOUtils.copy(serviceResponse.getInputStream(), writer, "UTF-8");
-			String personProfileResponse = writer.toString();
-
-			personProfile = HRXMLParser.parsePersonInformation(personProfileResponse);
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to parse the profile from response." + PROFILE_URL, e);
-		}
-
-		return personProfile;
-	}
-
+	@Override
 	public JobSearchInfo getJobs(String companyName, String countryCode) {
 		String jobsQueryURL = JOB_URL + "company-name=" + companyName + "&country-code=" + countryCode;
-
-		Response serviceResponse = null;
-		try {
-			serviceResponse = providerSupport.api(jobsQueryURL);
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to retrieve the jobs from " + jobsQueryURL, e);
-		}
-
-		if (serviceResponse.getStatus() != 200) {
-			throw new RuntimeException("Failed to retrieve the user profile from " + jobsQueryURL + ". Status :" + serviceResponse.getStatus());
-		}
+		String jobSearchResponse = getResponseFor(jobsQueryURL);
 
 		JobSearchInfo jobSearchInfo = null;
 		try {
-			StringWriter writer = new StringWriter();
-			IOUtils.copy(serviceResponse.getInputStream(), writer, "UTF-8");
-			String jobSearchResponse = writer.toString();
-
 			jobSearchInfo = HRXMLParser.parseJobSearchInformation(jobSearchResponse);
 		} catch (Exception e) {
-			throw new RuntimeException("Failed to parse the profile from response." + PROFILE_URL, e);
+			throw new RuntimeException("Failed to parse job search info from response." + jobsQueryURL, e);
 		}
 
 		return jobSearchInfo;
+	}
+
+	private String getResponseFor(String url) {
+		Response serviceResponse = null;
+		try {
+			serviceResponse = providerSupport.api(url);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to retrieve from: " + url, e);
+		}
+
+		if (serviceResponse.getStatus() != 200) {
+			throw new RuntimeException("Failed to retrieve from: " + url + ". Status :" + serviceResponse.getStatus());
+		}
+
+		try {
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(serviceResponse.getInputStream(), writer, "UTF-8");
+			return writer.toString();
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to read response." + url, e);
+		}
 	}
 }
